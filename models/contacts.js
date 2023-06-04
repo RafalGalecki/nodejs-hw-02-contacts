@@ -40,13 +40,14 @@ const removeContact = async (contactId) => {
 
 const addContact = async (body) => {
   const date = new Date();
-  const contactId = (
-    Math.floor(Math.random() * 100000) + parseInt(date.getTime() / 1000)
-  ).toString();
+
   const contacts = await fs
     .readFile(contactsPath)
     .then((data) => JSON.parse(data))
     .then((contacts) => {
+      const contactId = (
+        Math.floor(Math.random() * 1000) * parseInt(date.getTime() / 100)
+      ).toString();
       body = { id: contactId, ...body };
       return [...contacts, body];
     });
@@ -54,7 +55,7 @@ const addContact = async (body) => {
   return body;
 };
 
-const updateContact = async (contactId, body) => {};
+
 
 module.exports = {
   listContacts,

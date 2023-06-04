@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-// const Joi = require('joi');
+const Joi = require("joi");
 
 const {
   listContacts,
@@ -9,6 +9,25 @@ const {
   addContact,
   // updateContact,
 } = require("../../models/contacts");
+
+// validation of POST body
+const myValidation = Joi.defaults(() =>
+  Joi.object({
+    name: Joi.string().pattern(
+      /^([A-ZĄĆĘŁŃÓŚŹŻ]+'?[a-ząćęłńóśźż]+|[A-ZĄĆĘŁŃÓŚŹŻ][a-ząćęłńóśźż]+'?[a-ząćęłńóśźż]+) ([A-ZĄĆĘŁŃÓŚŹŻ]+'?[a-ząćęłńóśźż]+|[A-ZĄĆĘŁŃÓŚŹŻ][a-ząćęłńóśźż]+'?[a-ząćęłńóśźż]+)$/
+    ),
+    email: Joi.string().email(),
+    phone: Joi.string().pattern(
+      /^([+][0-9]{0,4})?[\s]?([(][0-9]{1,3}[)])?[\s]?[0-9]{2,3}[-\s]?[0-9]{2,3}[-\s]?[0-9]{2,4}$/
+    ),
+  })
+);
+
+// const schema = myValidation.object().or("name", "email", "phone");
+const schemaRequired = myValidation
+  .object()
+  .options({ presence: "required" })
+  .required();
 
 router.get("/", async (req, res, next) => {
   try {
@@ -63,6 +82,14 @@ router.delete("/:contactId", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
   try {
     const { name, email, phone } = await req.body;
+    const validation = schemaRequired.validate({ name, email, phone });
+    if (validation.error) {
+      res.status(400).json({
+        message: validation.error.details[0].message,
+        code: 400,
+      });
+      return;
+    }
     const contact = await addContact({ name, email, phone });
     res.status(201).json(contact);
   } catch (error) {
