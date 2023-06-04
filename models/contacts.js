@@ -39,32 +39,19 @@ const removeContact = async (contactId) => {
 };
 
 const addContact = async (body) => {
-  body = {
-    id: (
-      Math.floor(Math.random() * 100000) + contactsDataBase.length
-    ).toString(),
-    name,
-    email,
-    phone,
-  };
-
-  if (name === undefined || email === undefined || phone === undefined) {
-    console.log(
-      "Please set all arguments (name, email, phone) to add contact".red
-    );
-    return;
-  }
-
-  contactsDataBase.push(body);
-
-  const contactsUpdate = JSON.stringify(contactsDataBase);
-
-  fs.writeFile(contactsPath, contactsUpdate, (error) => {
-    if (error) {
-      console.log("Oops, something went wrong:".red, error.message);
-    }
-  });
-  console.log(`${name} has been added to your contacts`.green);
+  const date = new Date();
+  const contactId = (
+    Math.floor(Math.random() * 100000) + parseInt(date.getTime() / 1000)
+  ).toString();
+  const contacts = await fs
+    .readFile(contactsPath)
+    .then((data) => JSON.parse(data))
+    .then((contacts) => {
+      body = { id: contactId, ...body };
+      return [...contacts, body];
+    });
+  await fs.writeFile(contactsPath, JSON.stringify(contacts));
+  return body;
 };
 
 const updateContact = async (contactId, body) => {};
