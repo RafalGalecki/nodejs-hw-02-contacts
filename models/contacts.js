@@ -22,30 +22,20 @@ const getContactById = async (contactId) => {
 };
 
 const removeContact = async (contactId) => {
-  await fs
+  let isContact = false;
+  const contacts = await fs
     .readFile(contactsPath)
-    .then((data) => {
-      const contacts = parseContacts(data);
-      return contacts;
-    })
-    .then((contacts) => {
-      const contactIndex = contacts.findIndex(
-        (contact) => contact.id === contactId
-      );
-      if (contactIndex !== -1) {
-        contacts.splice(contactIndex, 1);
-
-        fs.writeFile(contactsPath, JSON.stringify(contacts), (error) => {
-          if (error) {
-            console.log(error.message);
-          }
-        });
-        console.log(`Contact with the id ${contactId} has been removed.`.green);
-      } else {
-        console.log(`There is no contact with the id: ${contactId}.`.red);
-      }
-    })
-    .catch((error) => console.log(error.message));
+    .then((data) => JSON.parse(data))
+    .then((contacts) =>
+      contacts.filter((contact) => {
+        if (contact.id === contactId) {
+          isContact = true;
+        }
+        return contact.id !== contactId;
+      })
+    );
+  await fs.writeFile(contactsPath, JSON.stringify(contacts));
+  return isContact;
 };
 
 const addContact = async (body) => {
