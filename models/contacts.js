@@ -1,25 +1,16 @@
 const fs = require("fs/promises");
 const path = require("path");
 
-const contactsPath = path.join("./models", "contacts.json");
-const contactsDataBase = require("./models/contacts.json");
-
-function parseContacts(data) {
-  return JSON.parse(data.toString());
-}
+const contactsPath = path.format({
+  root: "/ignored",
+  dir: "models",
+  base: "contacts.json",
+});
 
 const listContacts = async () => {
-  fs.readFile(contactsPath)
-    .then((data) => {
-      return parseContacts(data);
-    })
-    .then((list) => {
-      return [...list].sort((a, b) => {
-        return a.name.localeCompare(b.name);
-      });
-    })
-    .then((result) => console.table(result))
-    .catch((error) => console.log(error.message));
+  return fs.readFile(contactsPath).then((contacts) => {
+    return JSON.parse(contacts);
+  });
 };
 
 const getContactById = async (contactId) => {
@@ -33,7 +24,7 @@ const getContactById = async (contactId) => {
         (contact) => contact.id === contactId
       );
       if (contactsFilter.length > 0) {
-        console.table(contactsFilter);
+        //console.table(contactsFilter);
         return;
       }
       console.log(`There is no contact with the id: ${contactId}.`.red);
@@ -42,7 +33,8 @@ const getContactById = async (contactId) => {
 };
 
 const removeContact = async (contactId) => {
-  fs.readFile(contactsPath)
+  await fs
+    .readFile(contactsPath)
     .then((data) => {
       const contacts = parseContacts(data);
       return contacts;
@@ -65,7 +57,6 @@ const removeContact = async (contactId) => {
       }
     })
     .catch((error) => console.log(error.message));
-
 };
 
 const addContact = async (body) => {
@@ -95,7 +86,6 @@ const addContact = async (body) => {
     }
   });
   console.log(`${name} has been added to your contacts`.green);
-
 };
 
 const updateContact = async (contactId, body) => {};
