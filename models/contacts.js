@@ -14,22 +14,11 @@ const listContacts = async () => {
 };
 
 const getContactById = async (contactId) => {
-  fs.readFile(contactsPath)
-    .then((data) => {
-      const contacts = parseContacts(data);
-      return contacts;
-    })
-    .then((contacts) => {
-      const contactsFilter = contacts.filter(
-        (contact) => contact.id === contactId
-      );
-      if (contactsFilter.length > 0) {
-        //console.table(contactsFilter);
-        return;
-      }
-      console.log(`There is no contact with the id: ${contactId}.`.red);
-    })
-    .catch((err) => console.log(err.message));
+  return fs
+    .readFile(contactsPath)
+    .then((contacts) =>
+      JSON.parse(contacts).find((contact) => contact.id === contactId)
+    );
 };
 
 const removeContact = async (contactId) => {
