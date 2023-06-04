@@ -7,11 +7,12 @@ const {
   getContactById,
   removeContact,
   addContact,
+  updateContact,
   // updateContact,
 } = require("../../models/contacts");
 
 // validation of POST body
-const myValidation = Joi.defaults(() =>
+const contactValidation = Joi.defaults(() =>
   Joi.object({
     name: Joi.string().pattern(
       /^([A-ZĄĆĘŁŃÓŚŹŻ]+'?[a-ząćęłńóśźż]+|[A-ZĄĆĘŁŃÓŚŹŻ][a-ząćęłńóśźż]+'?[a-ząćęłńóśźż]+) ([A-ZĄĆĘŁŃÓŚŹŻ]+'?[a-ząćęłńóśźż]+|[A-ZĄĆĘŁŃÓŚŹŻ][a-ząćęłńóśźż]+'?[a-ząćęłńóśźż]+)$/
@@ -23,11 +24,12 @@ const myValidation = Joi.defaults(() =>
   })
 );
 
-// const schema = myValidation.object().or("name", "email", "phone");
-const schemaRequired = myValidation
+const schemaRequired = contactValidation
   .object()
   .options({ presence: "required" })
   .required();
+
+const schema = contactValidation.object().or("name", "email", "phone");
 
 router.get("/", async (req, res, next) => {
   try {
@@ -98,7 +100,36 @@ router.post("/", async (req, res, next) => {
 });
 
 router.put("/:contactId", async (req, res, next) => {
-  res.json({ message: "template message" });
+  try {
+    const { contactId } = req.params;
+    const { name, email, phone } = req.body;
+    const validation = schema.validate({ name, email, phone });
+    if (validation.error) {
+      res.status(400).json({
+        message: validation.error.details[0].message,
+        code: 400,
+      });
+      return;
+    }
+    const isContact = await updateContact(
+      contactId,
+      JSON.parse(JSON.stringify(validation.value))
+    );
+    if (isContact) {
+      res.json({
+        status: "success",
+        code: 200,
+        data: { ...isContact },
+      });
+      return;
+    }
+    res.status(404).json({
+      message: "Not found",
+      code: 404,
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;
