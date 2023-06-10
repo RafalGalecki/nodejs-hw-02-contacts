@@ -1,7 +1,7 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
 
-// validation of POST body
+// validation of POST body (Joi validation)
 const contactValidation = Joi.defaults(() =>
   Joi.object({
     name: Joi.string().pattern(
@@ -24,7 +24,7 @@ const schema = contactValidation
   .object()
     .or("name", "email", "phone", "favorite");
   
-// ---------------------------------------------- //
+// -------  mongoose model validation ---------- //
 
 const Schema = mongoose.Schema;
 
@@ -48,8 +48,10 @@ const contacts = new Schema(
   { versionKey: false, timestamps: true }
 );
 
+const Contacts = mongoose.model("contacts", contacts);
+
 module.exports = {
   schemaRequired,
   schema,
-  contacts,
+  Contacts,
 };
