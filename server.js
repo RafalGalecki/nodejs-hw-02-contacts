@@ -8,9 +8,8 @@ mongoose.Promise = global.Promise;
 
 // console.log(process.env.DB_HOST);
 require("dotenv").config();
-// const UriDb = process.env.DB_HOST;
-const UriDb =
- "mongodb+srv://darthunter:Kielbasa_21@cluster0.nlj5opc.mongodb.net/db-contacts";
+const UriDb = process.env.DB_HOST;
+
 
 mongoose.set("strictQuery", false);
 
