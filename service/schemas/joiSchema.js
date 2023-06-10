@@ -1,5 +1,4 @@
 const Joi = require("joi");
-const mongoose = require("mongoose");
 
 // validation of POST body (Joi validation)
 const contactValidation = Joi.defaults(() =>
@@ -22,36 +21,9 @@ const schemaRequired = contactValidation
 
 const schema = contactValidation
   .object()
-    .or("name", "email", "phone", "favorite");
-  
-// -------  mongoose model validation ---------- //
-
-const Schema = mongoose.Schema;
-
-const contacts = new Schema(
-  {
-    name: {
-      type: String,
-      required: [true, "Enter contat's name"],
-    },
-    email: {
-      type: String,
-    },
-    phone: {
-      type: String,
-    },
-    favorite: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  { versionKey: false, timestamps: true }
-);
-
-const Contacts = mongoose.model("contacts", contacts);
+  .or("name", "email", "phone", "favorite");
 
 module.exports = {
   schemaRequired,
   schema,
-  Contacts,
 };

@@ -1,4 +1,4 @@
-const Contacts = require("./schemas/contacts");
+const Contacts = require("./schemas/mongooseSchema.js");
 
 const listContacts = async () => await Contacts.find();
 

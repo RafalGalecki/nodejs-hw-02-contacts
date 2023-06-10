@@ -1,5 +1,5 @@
 const service = require("../service/index");
-const Schema = require("../service/schema/contacts");
+//const Schema = require("../service/schema/contacts");
 
 const getAll = async (req, res, next) => {
   try {

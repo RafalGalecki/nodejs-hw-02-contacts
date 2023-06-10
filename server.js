@@ -2,21 +2,21 @@ const app = require('./app')
 
 const mongoose = require('mongoose');
 
-require('dotenv').config();
+
 
 mongoose.Promise = global.Promise;
 
 // console.log(process.env.DB_HOST);
-
-//const UriDb = process.env.DB_HOST;
-const DB_HOST =
-  "mongodb+srv://darthunter:Kielbasa_21@cluster0.nlj5opc.mongodb.net/?retryWrites=true&w=majority";
+require("dotenv").config();
+// const UriDb = process.env.DB_HOST;
+const UriDb =
+ "mongodb+srv://darthunter:Kielbasa_21@cluster0.nlj5opc.mongodb.net/db-contacts";
 
 mongoose.set("strictQuery", false);
 
-const connection = mongoose.connect(DB_HOST, {
+const connection = mongoose.connect(UriDb, {
   useUnifiedTopology: true,
-  // useFindAndModify: true,
+  useFindAndModify: false,
 });
 
 connection
@@ -29,3 +29,4 @@ connection
     console.log(`Server error: ${err.message}`);
     process.exit();
   });
+  //
