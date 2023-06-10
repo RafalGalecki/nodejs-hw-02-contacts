@@ -16,7 +16,7 @@ mongoose.set("strictQuery", false);
 
 const connection = mongoose.connect(UriDb, {
   useUnifiedTopology: true,
-  useFindAndModify: false,
+  // useFindAndModify: false,
 });
 
 connection
