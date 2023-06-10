@@ -11,25 +11,25 @@ const {
   // updateContact,
 } = require("../../models/contacts");
 
-// // validation of POST body
-// const contactValidation = Joi.defaults(() =>
-//   Joi.object({
-//     name: Joi.string().pattern(
-//       /^([A-ZĄĆĘŁŃÓŚŹŻ]+'?[a-ząćęłńóśźż]+|[A-ZĄĆĘŁŃÓŚŹŻ][a-ząćęłńóśźż]+'?[a-ząćęłńóśźż]+) ([A-ZĄĆĘŁŃÓŚŹŻ]+'?[a-ząćęłńóśźż]+|[A-ZĄĆĘŁŃÓŚŹŻ][a-ząćęłńóśźż]+'?[a-ząćęłńóśźż]+)$/
-//     ),
-//     email: Joi.string().email(),
-//     phone: Joi.string().pattern(
-//       /^([+][0-9]{0,4})?[\s]?([(][0-9]{1,3}[)])?[\s]?[0-9]{2,3}[-\s]?[0-9]{2,3}[-\s]?[0-9]{2,4}$/
-//     ),
-//   })
-// );
+// validation of POST body
+const contactValidation = Joi.defaults(() =>
+  Joi.object({
+    name: Joi.string().pattern(
+      /^([A-ZĄĆĘŁŃÓŚŹŻ]+'?[a-ząćęłńóśźż]+|[A-ZĄĆĘŁŃÓŚŹŻ][a-ząćęłńóśźż]+'?[a-ząćęłńóśźż]+) ([A-ZĄĆĘŁŃÓŚŹŻ]+'?[a-ząćęłńóśźż]+|[A-ZĄĆĘŁŃÓŚŹŻ][a-ząćęłńóśźż]+'?[a-ząćęłńóśźż]+)$/
+    ),
+    email: Joi.string().email(),
+    phone: Joi.string().pattern(
+      /^([+][0-9]{0,4})?[\s]?([(][0-9]{1,3}[)])?[\s]?[0-9]{2,3}[-\s]?[0-9]{2,3}[-\s]?[0-9]{2,4}$/
+    ),
+  })
+);
 
-// const schemaRequired = contactValidation
-//   .object()
-//   .options({ presence: "required" })
-//   .required();
+const schemaRequired = contactValidation
+  .object()
+  .options({ presence: "required" })
+  .required();
 
-// const schema = contactValidation.object().or("name", "email", "phone");
+const schema = contactValidation.object().or("name", "email", "phone");
 
 router.get("/", async (req, res, next) => {
   try {
